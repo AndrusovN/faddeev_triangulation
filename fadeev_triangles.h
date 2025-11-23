@@ -5,7 +5,7 @@
 #include "geometry.h"
 #include "auxiliary.h"
 
-
+// returns all internal integral points of a triangle T
 std::vector<Vector2> find_inside_points(const Triangle& T) {
     int min_x = min(T.get_vertex(0).x(), T.get_vertex(1).x(), T.get_vertex(2).x());
     int min_y = min(T.get_vertex(0).y(), T.get_vertex(1).y(), T.get_vertex(2).y());
@@ -27,6 +27,7 @@ std::vector<Vector2> find_inside_points(const Triangle& T) {
     return points_inside;
 }
 
+// for a convex polygon with vertices array polygon checks if point pt is internal for it
 bool is_inside_polygon(const Vector2& pt, const std::vector<Vector2>& polygon) {
     int checker = distance_signed(pt, polygon.back(), polygon.front());
     for (int id = 2; id < polygon.size(); ++id) {
@@ -36,10 +37,15 @@ bool is_inside_polygon(const Vector2& pt, const std::vector<Vector2>& polygon) {
     return true;
 }
 
+// checks if the method described in the article fails for triangle T
+// returns 4 points lying on one face of Conv(S) if the method fails
+// otherwise returns empty vector
 std::vector<Vector2> check_triangle(const Triangle& T) {
     auto points = find_inside_points(T);
 
+    // by h(A)+h(B) returns vector of such pairs (A, B)
     std::map<int, std::vector<std::pair<Vector2, Vector2>>> valued_pairs;
+    // building valued_pairs
     for (auto& A : points) {
         for (auto& B : points) {
             if (B == A) continue;
@@ -53,6 +59,7 @@ std::vector<Vector2> check_triangle(const Triangle& T) {
         }
     }
 
+    // checking if valued_pairs contain non-trivial ones
     for (auto& pair_candidates : valued_pairs) {
         auto& candidates = pair_candidates.second;
         for (auto& first_pair : candidates) {
@@ -68,47 +75,15 @@ std::vector<Vector2> check_triangle(const Triangle& T) {
 
                 if (C - A == D - B && B - A == D - C) {
                     bool failed_by_inside_point = false;
-                    /*for (auto& pt : points) {
-                        if (pt == A || pt == B || pt == C || pt == D) continue;
-                        if (is_inside_polygon(pt, {A, B, D, C})) {
-                            failed_by_inside_point = true;
-                            break;
-                        }
-                    }*/
-                   return {A, B, C, D};
-                    /*if (abs(distance_signed(B, A, C)) == 1) {
-                        return {A, B, C, D};
-                    } else {
-                        std::cout << "Not a bad case since area is " << abs(distance_signed(B, A, C)) << std::endl;
-                    }*/
-                    // if (!failed_by_inside_point) return {A, B, C, D};
-                }
-            }
-        }
-    } 
-    /*
-    for (auto& A : points)
-    {
-        for (auto& B : points) {
-            if (A == B) continue;
-            for (auto& C : points) {
-                if (A == C || B == C) continue;
-                auto D = B + C - A;
-                if (!T.is_inside(D)) continue;
-                int a = T.function_value(A);
-                int b = T.function_value(B);
-                int c = T.function_value(C);
-                int d = T.function_value(D);
-
-                if (a + d == b + c) {
                     return {A, B, C, D};
                 }
             }
         }
-    }*/
+    } 
     return std::vector<Vector2>();
 }
 
+// In the case of fail prints information about the fail
 void print_full_log(const Triangle& T, int p, std::vector<Vector2>& res) {
     std::cout << "Found bad triangle with p = " << p << std::endl;
     std::cout << "FYI p mod 6 is " << p%6 << std::endl << std::endl;
@@ -118,6 +93,7 @@ void print_full_log(const Triangle& T, int p, std::vector<Vector2>& res) {
     }
 }
 
+// For a given prime p checks if all prime triangles of area p are triangulated properly with the given method
 bool check_prime(int p, bool full_log=false) {
 
     if (!is_prime(p)) return false;
@@ -143,7 +119,5 @@ bool check_prime(int p, bool full_log=false) {
     }
     std::cout << "Checked p = " << p << std::endl;
     if (found) return found;
-    //std::cout << "Checked p = " << p << " - bad triangles not found" << std::endl;
-    //std::cout << "FYI p mod 6 is " << p%6 << std::endl << std::endl;
     return false;
 }

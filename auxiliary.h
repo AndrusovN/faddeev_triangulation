@@ -25,6 +25,7 @@ bool is_prime(int p) {
     return true;
 }
 
+// fast raise of a to power mod p
 int bin_pow(int a, int power, int p) {
     int res = 1;
     int pow = a;
@@ -40,6 +41,7 @@ int bin_pow(int a, int power, int p) {
     return res;
 }
 
+// inverse of a mod p
 int inverse(int a, int p) {
     return bin_pow(a, p-2, p);
 }

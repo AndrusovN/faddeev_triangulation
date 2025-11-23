@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+// basic operations with 3D integral vectors
 class Vector3 {
     private:
         int _x, _y, _z;
@@ -66,6 +67,7 @@ class Vector3 {
         friend std::ostream& operator << (std::ostream&, const Vector3&);
 };
 
+// basic operations with 2D integral vectors
 class Vector2 {
     private:
         int _x, _y;
@@ -137,12 +139,14 @@ std::ostream& operator << (std::ostream& o, const Vector2& point) {
     return o;
 }
 
+// Oriented integral distance from point from to the line through points first and second
 int distance_signed(const Vector2& from, const Vector2& first, const Vector2& second) {
     auto diff = second - first;
     auto offset = from - first;
     return offset.dot(diff.orthogonal());
 }
 
+// Integral triangle
 class Triangle {
     private: 
         Vector2 vertices[3];
@@ -160,7 +164,8 @@ class Triangle {
             if (distance_signed(pt, vertices[2], vertices[0]) <= 0) return false;
             return true;
         }
-
+        
+        // coordinates of the output are integral distances to each side of the triangle respectively 
         Vector3 get_distances(const Vector2& pt) const {
             return Vector3(
                 distance_signed(pt, vertices[0], vertices[1]),
@@ -169,6 +174,7 @@ class Triangle {
             );
         }
 
+        // the height function
         int function_value(const Vector2& pt) const {
             return get_distances(pt).sqr_len();
         }
