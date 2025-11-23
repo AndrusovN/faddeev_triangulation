@@ -4,3 +4,6 @@ all:
 run: all
 	./triangulate
 
+render: run
+	mpost triangulation11.mp
+
