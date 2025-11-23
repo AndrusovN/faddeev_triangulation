@@ -60,9 +60,11 @@ void print_point(Vector2 pt, const Triangle& T, std::ofstream& f, int id) {
 }
 
 // create the MetaPost file
-void generate_mp_picture(const std::vector<Triangle>& triangulation, const Triangle& T, const std::string& filename) {
+void generate_mp_picture(const std::vector<Triangle>& triangulation, const Triangle& T, const std::string& filename, const char* output_format) {
     std::ofstream f(filename, std::ios_base::out);
-    f << "prologues:=3;\nverbatimtex\n%&latex\n\\documentclass{minimal}\n\\begin{document}\netex\nbeginfig(0);\n";
+    f << "outputformat:=\"";
+    f << output_format;
+    f << "\";\nprologues:=3;\nverbatimtex\n%&latex\n\\documentclass{minimal}\n\\begin{document}\netex\nbeginfig(0);\n";
     int id = 1;
 
     Triangle sample(Vector2(-12, 0), Vector2(12, 0), Vector2(0, 18));
@@ -89,9 +91,14 @@ void generate_mp_picture(const std::vector<Triangle>& triangulation, const Trian
     f.close();
 }
 
-int main() {
+int main(int argc, char** argv) {
+    const char* output_format = "png";
+    if (argc == 2) {
+        output_format = argv[1];
+    }
+
     // The triangle from Example 2.1. of Alastair Craw paper
     Triangle special = Triangle(Vector2(0, 0), Vector2(-5, 11), Vector2(-1, 0));
     auto triangulation = triangulate(special);
-    generate_mp_picture(triangulation, special, "triangulation.mp");
+    generate_mp_picture(triangulation, special, "triangulation.mp", output_format);
 }

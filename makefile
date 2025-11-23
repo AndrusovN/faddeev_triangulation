@@ -2,8 +2,8 @@ all:
 	g++ triangulate.cpp -o triangulate
 
 run: all
-	./triangulate
+	./triangulate $(output)
 
-render: run
+render: run 
 	mpost triangulation.mp
 
