@@ -93,5 +93,5 @@ int main() {
     // The triangle from Example 2.1. of Alastair Craw paper
     Triangle special = Triangle(Vector2(0, 0), Vector2(-5, 11), Vector2(-1, 0));
     auto triangulation = triangulate(special);
-    generate_mp_picture(triangulation, special, "triangulation11.mp");
+    generate_mp_picture(triangulation, special, "triangulation.mp");
 }

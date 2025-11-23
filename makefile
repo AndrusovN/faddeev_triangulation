@@ -5,5 +5,5 @@ run: all
 	./triangulate
 
 render: run
-	mpost triangulation11.mp
+	mpost triangulation.mp
 
